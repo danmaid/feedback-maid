@@ -1,18 +1,19 @@
 {
   "name": "feedback-maid",
   "version": "0.0.1",
-  "private": true,
   "description": "",
   "author": {
     "name": "danmaid"
   },
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "tsc",
+    "build:demo": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "lib/index.js",
+  "module": "lib/index.js",
   "dependencies": {
     "vue": "^2.6.11",
     "vuetify": "^2.2.11",

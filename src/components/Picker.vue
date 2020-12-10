@@ -6,14 +6,26 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { Target } from '..'
 
-export type Target = {
-  offsetX: number;
-  offsetY: number;
-  target: Element;
+/** Element のCSSクエリ文字列を取得する */
+function getElementQuery(element: Element): string {
+  const strings: string[] = []
+  for (let e: Element | null = element; e?.parentElement; e = e.parentElement) {
+    const tag = e.localName
+    const id = e.id ? `#${e.id}` : ''
+    let nth = 1
+    for (let sib = e.previousElementSibling; sib; sib = sib.previousElementSibling) {
+      nth++
+    }
+    const nthChild = nth > 1 ? `:nth-child(${nth})` : ''
+    strings.unshift(`${tag}${id}${nthChild}`)
+  }
+  return strings.join('>')
 }
 
 export default Vue.extend({
+  name: 'Picker',
   data() {
     return {
       enabled: false
@@ -39,15 +51,21 @@ export default Vue.extend({
       document.body.classList.remove('pick-cursor')
     },
     pick(ev: MouseEvent) {
+      console.log('picked', ev)
       ev.preventDefault()
       ev.stopPropagation()
-      const target: Target = {
-        offsetX: ev.offsetX,
-        offsetY: ev.offsetY,
-        target: ev.target as Element
+      if (ev.target instanceof HTMLElement) {
+        const selector = getElementQuery(ev.target)
+        const target: Target = {
+          selector,
+          offsetX: ev.offsetX,
+          offsetY: ev.offsetY,
+        }
+        this.$emit('input', target)
+        this.disablePick()
+      } else {
+        console.log('ignore', ev.target)
       }
-      this.$emit('input', target)
-      this.disablePick()
       return false
     }
   }

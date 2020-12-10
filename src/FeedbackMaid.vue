@@ -1,32 +1,28 @@
 <template>
   <div>
     <Picker @input="picked"></Picker>
+    <FeedbackOverlay v-model="feedbacks"></FeedbackOverlay>
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import Picker, { Target } from './components/Picker.vue'
-import Comment from './components/Comment.vue'
-
-type Feedback = {
-  target: Target;
-  comment?: string;
-}
+import Picker from './components/Picker.vue'
+import FeedbackOverlay from './components/FeedbackOverlay.vue'
+import { Feedback, Target } from '.'
 
 export default Vue.extend({
-  components: { Picker },
-  computed: {
-    feedbacks(): Feedback[] { return [] }
-  },
-  mounted() {
-    console.log('FeedbackMaid')
+  name: 'FeedbackMaid',
+  components: { Picker, FeedbackOverlay },
+  data(): { feedbacks: Feedback[] } {
+    return {
+      feedbacks: []
+    }
   },
   methods: {
     picked(target: Target) {
-      console.log('picked')
-      console.log(target)
-      this.feedbacks.push({ target })
+      console.log('picked', target)
+      this.feedbacks.push({ url: location.href, target })
     }
   }
 })
